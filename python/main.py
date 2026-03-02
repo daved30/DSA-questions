@@ -376,3 +376,21 @@ def isValid(s):
     return True if not stack else False
     
 print(isValid("([{}])"))
+
+def findMin(nums):
+    """
+    Input: nums = [3,4,5,6,1,2]
+
+    Output: 1
+    """
+    length = len(nums)
+    l, r = 0, length - 1
+    while l < r:
+        m = (l + r) // 2
+        if nums[m] > nums[r]:
+            l = m + 1
+        else:
+            r = m
+    return nums[l]
+
+print(findMin([3,4,5,6,1,2]))
