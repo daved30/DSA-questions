@@ -375,7 +375,7 @@ def isValid(s):
             stack.append(c)
     return True if not stack else False
     
-print(isValid.__name, isValid("([{}])"))
+print(isValid.__name__, isValid("([{}])"))
 
 def findMin(nums):
     """
@@ -407,14 +407,21 @@ def search(nums, target):
     Input: nums = [1], target = 0
     Output: -1
     """
-    length = len(nums)
-    l, r = 0, length - 1
-    while l < r:
+    l, r = 0, len(nums) - 1
+    while l <= r:
         m = (l + r) // 2
-        if nums[m] > nums[r]:
-            l = m + 1
+        if target == nums[m]:
+            return m
+        if nums[l] <= nums[m]:
+            if target > nums[m] or target < nums[l]:
+                l = m + 1
+            else:
+                r = m - 1
         else:
-            r = m
-    return nums[l + 1]
+            if target < nums[m] or target > nums[r]:
+                r = m - 1
+            else:
+                l = m + 1
+    return -1 
     
 print(search.__name__, search([4,5,6,7,0,1,2], 0))
