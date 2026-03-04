@@ -32,7 +32,7 @@ def mergeIntervals(intervals):
             merged[-1] = [merged[-1][0], max(merged[-1][1], interval[1])]
     return merged
 
-print(mergeIntervals([[1,3],[2,4],[5,7],[6,8]])) # Output: [[1,4],[5,8]]
+print(mergeIntervals.__name__, mergeIntervals([[1,3],[2,4],[5,7],[6,8]])) # Output: [[1,4],[5,8]]
 
 def shiftZeros(arr):
     left = 0
@@ -42,7 +42,7 @@ def shiftZeros(arr):
             left += 1
     return arr
 
-print(shiftZeros([0,1,0,3,12]))
+print(shiftZeros.__name__, shiftZeros([0,1,0,3,12]))
 
 def groupAnagrams(strs):
     if len(strs) == 0:
@@ -67,7 +67,7 @@ def groupAnagramsNeetCodeSolution(strs):
         res[sortedS].append(word)
     return list(res.values())
     
-print(groupAnagramsNeetCodeSolution(["act","pots","tops","cat","stop","hat"]))
+print(groupAnagramsNeetCodeSolution.__name__, groupAnagramsNeetCodeSolution(["act","pots","tops","cat","stop","hat"]))
 
 def topKFrequent(nums, k):
     count = {}
@@ -76,7 +76,7 @@ def topKFrequent(nums, k):
     sorted_items = sorted(count.items(), key = lambda x: x[1], reverse = True)[:k]
     return [k for k, v in sorted_items]
 
-print(topKFrequent([1,2,2,2,2,3,3,3,3,3,3], 2))
+print(topKFrequent.__name__, topKFrequent([1,2,2,2,2,3,3,3,3,3,3], 2))
 
 def encodeEZApproach(strs):
     if len(strs) <= 1:
@@ -133,7 +133,7 @@ def productExceptSelf(nums):
         lst.append(prod // nums[i])
     return lst
     
-print(productExceptSelf([1, 2, 3, 4]))
+print(productExceptSelf.__name__, productExceptSelf([1, 2, 3, 4]))
 
 def productExceptSelf(nums):
     # Input: nums = [1,2,4,6] Output: [48,24,12,8]
@@ -148,7 +148,7 @@ def productExceptSelf(nums):
         postfix *= nums[i]
     return res
     
-print(productExceptSelf([1,2,4,6]))
+print(productExceptSelf.__name__, productExceptSelf([1,2,4,6]))
 
 def longestConsecutive(nums):
     numS = set(nums)
@@ -161,7 +161,7 @@ def longestConsecutive(nums):
             longest = max(length, longest)
     return longest
 
-print(longestConsecutive([4, 3, 100, 2, 1, 200]))
+print(longestConsecutive.__name__, longestConsecutive([4, 3, 100, 2, 1, 200]))
 
 def alNum(c):
     return (ord('A') <= ord(c) <= ord('Z') or
@@ -181,13 +181,13 @@ def isPalindrome(s):
         l, r = l + 1, r - 1
     return True
 
-print(isPalindrome("Was it a car or a cat I saw?"))
+print(isPalindrome.__name__, isPalindrome("Was it a car or a cat I saw?"))
 
 def hasAlternatingBits(n):
     x = n ^ (n >> 1)
     return (x & (x + 1)) == 0
 
-print(hasAlternatingBits(5))
+print(hasAlternatingBits.__name__, hasAlternatingBits(5))
 
 def twoSum2(numbers, target):
     """
@@ -207,7 +207,7 @@ def twoSum2(numbers, target):
             l += 1
     return [0, 0]
 
-print(twoSum2([2,7,11,15], 9))
+print(twoSum2.__name__, twoSum2([2,7,11,15], 9))
 
 def threeSum(nums):
     """
@@ -238,7 +238,7 @@ def threeSum(nums):
                     l += 1
     return res
 
-print(threeSum([-1,0,1,2,-1,-4]))
+print(threeSum.__name__, threeSum([-1,0,1,2,-1,-4]))
 
 def missingNumber(nums):
     """
@@ -258,7 +258,7 @@ def missingNumber(nums):
     actualSum = (length * (length + 1)) // 2
     return actualSum - sum
 
-print(missingNumber([9,6,4,2,3,5,7,0,1]))
+print(missingNumber.__name__, missingNumber([9,6,4,2,3,5,7,0,1]))
 
 def maxProfit(prices):
     """
@@ -277,7 +277,7 @@ def maxProfit(prices):
         r += 1
     return maxP
 
-print(maxProfit([10,1,5,6,7,1]))
+print(maxProfit.__name__, maxProfit([10,1,5,6,7,1]))
 
 def lengthOfLongestSubstring(s):
     """
@@ -296,7 +296,7 @@ def lengthOfLongestSubstring(s):
         res = max(res, r - l + 1)
     return res
 
-print(lengthOfLongestSubstring("zxyzxyz"))
+print(lengthOfLongestSubstring.__name__, lengthOfLongestSubstring("zxyzxyz"))
 
 def characterReplacement(s, k):
     """
@@ -315,7 +315,7 @@ def characterReplacement(s, k):
         res = max(res, (r - l + 1))
     return res
 
-print(characterReplacement("XYYX", 2))
+print(characterReplacement.__name__, characterReplacement("XYYX", 2))
 
 def minWindow(s, t):
     """
@@ -355,7 +355,7 @@ def minWindow(s, t):
     l, r = res
     return s[l : r + 1] if resLen != float("infinity") else ""
 
-print(minWindow("OUZODYXAZV", "XYZ"))
+print(minWindow.__name__, minWindow("OUZODYXAZV", "XYZ"))
 
 def isValid(s):
     """
@@ -375,7 +375,7 @@ def isValid(s):
             stack.append(c)
     return True if not stack else False
     
-print(isValid("([{}])"))
+print(isValid.__name__, isValid("([{}])"))
 
 def findMin(nums):
     """
@@ -393,4 +393,35 @@ def findMin(nums):
             r = m
     return nums[l]
 
-print(findMin([3,4,5,6,1,2]))
+print(findMin.__name__, findMin([3,4,5,6,1,2]))
+
+def search(nums, target):
+    """
+    Example 1:
+    Input: nums = [4,5,6,7,0,1,2], target = 0
+    Output: 4
+    Example 2:
+    Input: nums = [4,5,6,7,0,1,2], target = 3
+    Output: -1
+    Example 3:
+    Input: nums = [1], target = 0
+    Output: -1
+    """
+    l, r = 0, len(nums) - 1
+    while l <= r:
+        m = (l + r) // 2
+        if target == nums[m]:
+            return m
+        if nums[l] <= nums[m]:
+            if target > nums[m] or target < nums[l]:
+                l = m + 1
+            else:
+                r = m - 1
+        else:
+            if target < nums[m] or target > nums[r]:
+                r = m - 1
+            else:
+                l = m + 1
+    return -1 
+    
+print(search.__name__, search([4,5,6,7,0,1,2], 0))
