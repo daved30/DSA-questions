@@ -122,7 +122,7 @@ class Solution:
                 left += 1
         return arr
 
-    def groupAnagrams(strs):
+    def groupAnagrams(self, strs: ):
         if len(strs) == 0:
             return [[""]]
         if len(strs) == 1:
@@ -173,7 +173,7 @@ class Solution:
 
     stringValDec = decode(stringValEnc)
 
-    def productExceptSelf(nums):
+    def productExceptSelf(self, nums: List[int]) -> List[int]:
         prod = 1
         for i in nums:
             prod = prod * i
