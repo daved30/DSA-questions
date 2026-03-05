@@ -122,7 +122,7 @@ class Solution:
                 left += 1
         return arr
 
-    def groupAnagrams(self, strs: ):
+    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
         if len(strs) == 0:
             return [[""]]
         if len(strs) == 1:
