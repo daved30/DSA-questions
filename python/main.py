@@ -1,14 +1,70 @@
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, OrderedDict
 
-def func(s):
-    freq = Counter(s)
-    print(freq)
-    for ch in s:
-        if freq[ch] == 1:
-            return ch
-    return None
+import inspect
+import re
+import ast
 
-# print(func([1, 1, 2, 1, 2, 3, 1, 4, 4]))
+def parse_input_line(input_line: str):
+    """
+    Parse an input line like:
+    'numbers = [2,7,11,15], target = 9'
+    into a dict: {'numbers': [2,7,11,15], 'target': 9}
+    """
+    args_dict = {}
+    # Split only on commas that separate key=value pairs (not inside lists)
+    parts = re.split(r',(?![^\[]*\])', input_line)
+    for part in parts:
+        if "=" in part:
+            key, value = part.split("=", 1)
+            key, value = key.strip(), value.strip()
+            try:
+                args_dict[key] = ast.literal_eval(value)
+            except Exception:
+                args_dict[key] = value
+    return args_dict
+
+def run_all_functions(module):
+    # Collect functions in the order they appear in the file
+    funcs = OrderedDict(
+        sorted(
+            inspect.getmembers(module, inspect.isfunction),
+            key=lambda x: x[1].__code__.co_firstlineno
+        )
+    )
+
+    for name, func in funcs.items():
+        doc = func.__doc__
+        if not doc:
+            continue
+
+        print(f"\nFunction: {name}")
+        print("Docstring:", doc.strip())
+
+        # Find all Input/Output pairs in the docstring
+        inputs = re.findall(r"Input:\s*(.*)", doc)
+        outputs = re.findall(r"Output:\s*(.*)", doc)
+
+        for idx, input_line in enumerate(inputs, start=1):
+            try:
+                args_dict = parse_input_line(input_line)
+                result = func(**args_dict)
+
+                expected = None
+                if idx-1 < len(outputs):
+                    try:
+                        expected = ast.literal_eval(outputs[idx-1].strip())
+                    except Exception:
+                        expected = outputs[idx-1].strip()
+
+                print(f"Example {idx} Output: {result}")
+                if expected is not None:
+                    if result == expected:
+                        print("✅ Matches expected:", expected)
+                    else:
+                        print("❌ Mismatch! Expected:", expected)
+            except Exception as e:
+                print(f"Could not run Example {idx} automatically:", e)
+
 
 def validParanthesis(s):
     stack, mapping = [], {')': '(', '}': '{', ']': '['}
@@ -20,8 +76,6 @@ def validParanthesis(s):
             stack.append(ch)
     return not stack
 
-# print(validParanthesis("{[()]}"))
-
 def mergeIntervals(intervals):
     intervals.sort(key=lambda x: x[0])
     merged = []
@@ -32,8 +86,6 @@ def mergeIntervals(intervals):
             merged[-1] = [merged[-1][0], max(merged[-1][1], interval[1])]
     return merged
 
-print(mergeIntervals.__name__, mergeIntervals([[1,3],[2,4],[5,7],[6,8]])) # Output: [[1,4],[5,8]]
-
 def shiftZeros(arr):
     left = 0
     for right in range(len(arr)):
@@ -41,8 +93,6 @@ def shiftZeros(arr):
             arr[left], arr[right] = arr[right], arr[left]
             left += 1
     return arr
-
-print(shiftZeros.__name__, shiftZeros([0,1,0,3,12]))
 
 def groupAnagrams(strs):
     if len(strs) == 0:
@@ -66,8 +116,6 @@ def groupAnagramsNeetCodeSolution(strs):
         sortedS = "".join(sorted(word))
         res[sortedS].append(word)
     return list(res.values())
-    
-print(groupAnagramsNeetCodeSolution.__name__, groupAnagramsNeetCodeSolution(["act","pots","tops","cat","stop","hat"]))
 
 def topKFrequent(nums, k):
     count = {}
@@ -75,8 +123,6 @@ def topKFrequent(nums, k):
         count[i] = count.get(i, 0) + 1
     sorted_items = sorted(count.items(), key = lambda x: x[1], reverse = True)[:k]
     return [k for k, v in sorted_items]
-
-print(topKFrequent.__name__, topKFrequent([1,2,2,2,2,3,3,3,3,3,3], 2))
 
 def encodeEZApproach(strs):
     if len(strs) <= 1:
@@ -87,16 +133,12 @@ def encodeEZApproach(strs):
 
 stringValEnc = encodeEZApproach(["Hello","World"])
 
-print(stringValEnc)
-
 def decodeEZApproach(s):
     splitString = s.split("#")
     lst = [word for word in splitString]
     return lst
 
 stringValDec = decodeEZApproach(stringValEnc)
-
-print(stringValDec)
 
 def encode(strs):
     res = ""
@@ -105,8 +147,6 @@ def encode(strs):
     return res
 
 stringValEnc = encode(["Hello","World"])
-
-print(stringValEnc)
 
 def decode(s):
     res, i = [], 0
@@ -122,8 +162,6 @@ def decode(s):
 
 stringValDec = decode(stringValEnc)
 
-print(stringValDec)
-
 def productExceptSelf(nums):
     prod = 1
     for i in nums:
@@ -132,8 +170,6 @@ def productExceptSelf(nums):
     for i in range(len(nums)):
         lst.append(prod // nums[i])
     return lst
-    
-print(productExceptSelf.__name__, productExceptSelf([1, 2, 3, 4]))
 
 def productExceptSelf(nums):
     # Input: nums = [1,2,4,6] Output: [48,24,12,8]
@@ -147,8 +183,6 @@ def productExceptSelf(nums):
         res[i] *= postfix
         postfix *= nums[i]
     return res
-    
-print(productExceptSelf.__name__, productExceptSelf([1,2,4,6]))
 
 def longestConsecutive(nums):
     numS = set(nums)
@@ -160,8 +194,6 @@ def longestConsecutive(nums):
                 length += 1
             longest = max(length, longest)
     return longest
-
-print(longestConsecutive.__name__, longestConsecutive([4, 3, 100, 2, 1, 200]))
 
 def alNum(c):
     return (ord('A') <= ord(c) <= ord('Z') or
@@ -181,13 +213,9 @@ def isPalindrome(s):
         l, r = l + 1, r - 1
     return True
 
-print(isPalindrome.__name__, isPalindrome("Was it a car or a cat I saw?"))
-
 def hasAlternatingBits(n):
     x = n ^ (n >> 1)
     return (x & (x + 1)) == 0
-
-print(hasAlternatingBits.__name__, hasAlternatingBits(5))
 
 def twoSum2(numbers, target):
     """
@@ -206,8 +234,6 @@ def twoSum2(numbers, target):
         else:
             l += 1
     return [0, 0]
-
-print(twoSum2.__name__, twoSum2([2,7,11,15], 9))
 
 def threeSum(nums):
     """
@@ -238,8 +264,6 @@ def threeSum(nums):
                     l += 1
     return res
 
-print(threeSum.__name__, threeSum([-1,0,1,2,-1,-4]))
-
 def missingNumber(nums):
     """
     Input: nums = [3,0,1]
@@ -258,8 +282,6 @@ def missingNumber(nums):
     actualSum = (length * (length + 1)) // 2
     return actualSum - sum
 
-print(missingNumber.__name__, missingNumber([9,6,4,2,3,5,7,0,1]))
-
 def maxProfit(prices):
     """
     Input: prices = [10,1,5,6,7,1]
@@ -276,8 +298,6 @@ def maxProfit(prices):
             l = r
         r += 1
     return maxP
-
-print(maxProfit.__name__, maxProfit([10,1,5,6,7,1]))
 
 def lengthOfLongestSubstring(s):
     """
@@ -296,8 +316,6 @@ def lengthOfLongestSubstring(s):
         res = max(res, r - l + 1)
     return res
 
-print(lengthOfLongestSubstring.__name__, lengthOfLongestSubstring("zxyzxyz"))
-
 def characterReplacement(s, k):
     """
     Input: s = "XYYX", k = 2
@@ -314,8 +332,6 @@ def characterReplacement(s, k):
             l += 1
         res = max(res, (r - l + 1))
     return res
-
-print(characterReplacement.__name__, characterReplacement("XYYX", 2))
 
 def minWindow(s, t):
     """
@@ -355,13 +371,11 @@ def minWindow(s, t):
     l, r = res
     return s[l : r + 1] if resLen != float("infinity") else ""
 
-print(minWindow.__name__, minWindow("OUZODYXAZV", "XYZ"))
-
 def isValid(s):
     """
     Input: s = "([{}])"
 
-    Output: true
+    Output: True
     """
     stack = []
     closedToOpen = {']': '[', '}': '{', ')': '('}
@@ -374,8 +388,6 @@ def isValid(s):
         else:
             stack.append(c)
     return True if not stack else False
-    
-print(isValid.__name__, isValid("([{}])"))
 
 def findMin(nums):
     """
@@ -392,8 +404,6 @@ def findMin(nums):
         else:
             r = m
     return nums[l]
-
-print(findMin.__name__, findMin([3,4,5,6,1,2]))
 
 def search(nums, target):
     """
@@ -422,6 +432,8 @@ def search(nums, target):
                 r = m - 1
             else:
                 l = m + 1
-    return -1 
-    
-print(search.__name__, search([4,5,6,7,0,1,2], 0))
+    return -1
+
+if __name__ == "__main__":
+    import main
+    run_all_functions(main)
