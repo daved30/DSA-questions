@@ -67,6 +67,23 @@ def run_all_functions(module):
 
 class Solution:
     def hasDuplicate(self, nums: List[int]) -> bool:
+        """
+        Example 1:
+        Input: nums = [1,2,3,1]
+        Output: true
+        Explanation:
+        The element 1 occurs at the indices 0 and 3.
+
+        Example 2:
+        Input: nums = [1,2,3,4]
+        Output: false
+        Explanation:
+        All elements are distinct.
+
+        Example 3:
+        Input: nums = [1,1,1,3,3,4,3,2,4,2]
+        Output: true
+        """
         count = {}
         for i in nums:
             if i in count.keys():
@@ -75,6 +92,15 @@ class Solution:
         return False
     
     def isAnagram(self, s: str, t: str) -> bool:
+        """
+        Example 1:
+        Input: s = "anagram", t = "nagaram"
+        Output: true
+
+        Example 2:
+        Input: s = "rat", t = "car"
+        Output: false
+        """
         a, b = {}, {}
         for i in s:
             a[i] = a.get(i, 0) + 1
@@ -85,6 +111,20 @@ class Solution:
         return False
     
     def twoSum(self, nums: List[int], target: int) -> List[int]:
+        """
+        Example 1:
+        Input: nums = [2,7,11,15], target = 9
+        Output: [0,1]
+        Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
+        
+        Example 2:
+        Input: nums = [3,2,4], target = 6
+        Output: [1,2]
+        
+        Example 3:
+        Input: nums = [3,3], target = 6
+        Output: [0,1]
+        """
         count = {}
         for i in range(len(nums)):
             num = nums[i]
@@ -93,18 +133,24 @@ class Solution:
                 return [count[num], i]
             count[diff] = i
         return [0, 0]
-    
-    def validParanthesis(s):
-        stack, mapping = [], {')': '(', '}': '{', ']': '['}
-        for ch in s:
-            if ch in mapping:
-                if not stack or stack.pop() != mapping[ch]:
-                    return False
-            elif ch in mapping.values():
-                stack.append(ch)
-        return not stack
 
-    def mergeIntervals(intervals):
+    def mergeIntervals(self, intervals: List[List[int]]) -> List[List[int]]:
+        """
+        Example 1:
+        Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
+        Output: [[1,6],[8,10],[15,18]]
+        Explanation: Since intervals [1,3] and [2,6] overlap, merge them into [1,6].
+        
+        Example 2:
+        Input: intervals = [[1,4],[4,5]]
+        Output: [[1,5]]
+        Explanation: Intervals [1,4] and [4,5] are considered overlapping.
+        
+        Example 3:
+        Input: intervals = [[4,7],[1,4]]
+        Output: [[1,7]]
+        Explanation: Intervals [1,4] and [4,7] are considered overlapping.
+        """
         intervals.sort(key=lambda x: x[0])
         merged = []
         for interval in intervals:
@@ -114,7 +160,16 @@ class Solution:
                 merged[-1] = [merged[-1][0], max(merged[-1][1], interval[1])]
         return merged
 
-    def shiftZeros(arr):
+    def shiftZeros(self, nums: List[int]) -> None:
+        """
+        Example 1:
+        Input: nums = [0,1,0,3,12]
+        Output: [1,3,12,0,0]
+        
+        Example 2:
+        Input: nums = [0]
+        Output: [0]
+        """
         left = 0
         for right in range(len(arr)):
             if arr[right] != 0:
@@ -123,6 +178,23 @@ class Solution:
         return arr
 
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
+        """
+        Example 1:
+        Input: strs = ["eat","tea","tan","ate","nat","bat"]
+        Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+        Explanation:
+        There is no string in strs that can be rearranged to form "bat".
+        The strings "nat" and "tan" are anagrams as they can be rearranged to form each other.
+        The strings "ate", "eat", and "tea" are anagrams as they can be rearranged to form each other.
+        
+        Example 2:
+        Input: strs = [""]
+        Output: [[""]]
+        
+        Example 3:
+        Input: strs = ["a"]
+        Output: [["a"]]
+        """
         if len(strs) == 0:
             return [[""]]
         if len(strs) == 1:
@@ -139,6 +211,23 @@ class Solution:
         return list(anagrams.values())
 
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
+        """
+        Example 1:
+        Input: strs = ["eat","tea","tan","ate","nat","bat"]
+        Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+        Explanation:
+        There is no string in strs that can be rearranged to form "bat".
+        The strings "nat" and "tan" are anagrams as they can be rearranged to form each other.
+        The strings "ate", "eat", and "tea" are anagrams as they can be rearranged to form each other.
+        
+        Example 2:
+        Input: strs = [""]
+        Output: [[""]]
+        
+        Example 3:
+        Input: strs = ["a"]
+        Output: [["a"]]
+        """
         res = defaultdict(list)
         for word in strs:
             sortedS = "".join(sorted(word))
@@ -146,6 +235,19 @@ class Solution:
         return list(res.values())
 
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        """
+        Example 1:
+        Input: nums = [1,1,1,2,2,3], k = 2
+        Output: [1,2]
+
+        Example 2:
+        Input: nums = [1], k = 1
+        Output: [1]
+
+        Example 3:
+        Input: nums = [1,2,1,2,1,2,3,1,3,2], k = 2
+        Output: [1,2]
+        """
         count = {}
         for i in nums:
             count[i] = count.get(i, 0) + 1
@@ -293,7 +395,7 @@ class Solution:
         actualSum = (length * (length + 1)) // 2
         return actualSum - sum
 
-    def maxProfit(prices):
+    def maxProfit(self, prices: List[int]) -> int:
         """
         Input: prices = [10,1,5,6,7,1]
         
@@ -310,7 +412,7 @@ class Solution:
             r += 1
         return maxP
 
-    def lengthOfLongestSubstring(s):
+    def lengthOfLongestSubstring(self, s: str) -> int:
         """
         Input: s = "zxyzxyz"
 
@@ -327,7 +429,7 @@ class Solution:
             res = max(res, r - l + 1)
         return res
 
-    def characterReplacement(s, k):
+    def characterReplacement(self, s: str, k: int) -> int:
         """
         Input: s = "XYYX", k = 2
         
@@ -344,7 +446,7 @@ class Solution:
             res = max(res, (r - l + 1))
         return res
 
-    def minWindow(s, t):
+    def minWindow(self, s: str, t: str) -> str:
         """
         Input: s = "OUZODYXAZV", t = "XYZ"
 
@@ -382,7 +484,7 @@ class Solution:
         l, r = res
         return s[l : r + 1] if resLen != float("infinity") else ""
 
-    def isValid(s):
+    def isValid(self, s: str) -> bool:
         """
         Input: s = "([{}])"
 
@@ -400,7 +502,7 @@ class Solution:
                 stack.append(c)
         return True if not stack else False
 
-    def findMin(nums):
+    def findMin(self, nums: List[int]) -> int:
         """
         Input: nums = [3,4,5,1,2]
         Output: 1
@@ -416,7 +518,7 @@ class Solution:
                 r = m
         return nums[l]
 
-    def search(nums, target):
+    def search(self, nums: List[int], target: int) -> int:
         """
         Example 1:
         Input: nums = [4,5,6,7,0,1,2], target = 0
