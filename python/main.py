@@ -1,17 +1,10 @@
 from collections import Counter, defaultdict, OrderedDict
+import inspect, re, ast
+from typing import List, Optional
 
-import inspect
-import re
-import ast
 
 def parse_input_line(input_line: str):
-    """
-    Parse an input line like:
-    'numbers = [2,7,11,15], target = 9'
-    into a dict: {'numbers': [2,7,11,15], 'target': 9}
-    """
     args_dict = {}
-    # Split only on commas that separate key=value pairs (not inside lists)
     parts = re.split(r',(?![^\[]*\])', input_line)
     for part in parts:
         if "=" in part:
@@ -23,50 +16,86 @@ def parse_input_line(input_line: str):
                 args_dict[key] = value
     return args_dict
 
-def run_all_functions(module):
-    # Collect functions in the order they appear in the file
-    funcs = OrderedDict(
-        sorted(
-            inspect.getmembers(module, inspect.isfunction),
-            key=lambda x: x[1].__code__.co_firstlineno
-        )
-    )
+def run_all_classes(module):
+    for cls_name, cls in inspect.getmembers(module, inspect.isclass):
+        if cls_name == "Solution":
+            solution = cls()  # instantiate Solution
+            methods = OrderedDict(
+                sorted(
+                    inspect.getmembers(cls, inspect.isfunction),
+                    key=lambda x: x[1].__code__.co_firstlineno
+                )
+            )
+            for name, method in methods.items():
+                doc = method.__doc__
+                if not doc:
+                    continue
 
-    for name, func in funcs.items():
-        doc = func.__doc__
-        if not doc:
-            continue
+                print(f"\nMethod: {name}")
+                print("Docstring:", doc.strip())
 
-        print(f"\nFunction: {name}")
-        print("Docstring:", doc.strip())
+                inputs = re.findall(r"Input:\s*(.*)", doc)
+                outputs = re.findall(r"Output:\s*(.*)", doc)
 
-        # Find all Input/Output pairs in the docstring
-        inputs = re.findall(r"Input:\s*(.*)", doc)
-        outputs = re.findall(r"Output:\s*(.*)", doc)
-
-        for idx, input_line in enumerate(inputs, start=1):
-            try:
-                args_dict = parse_input_line(input_line)
-                result = func(**args_dict)
-
-                expected = None
-                if idx-1 < len(outputs):
+                for idx, input_line in enumerate(inputs, start=1):
                     try:
-                        expected = ast.literal_eval(outputs[idx-1].strip())
-                    except Exception:
-                        expected = outputs[idx-1].strip()
+                        args_dict = parse_input_line(input_line)
 
-                print(f"Example {idx} Output: {result}")
-                if expected is not None:
-                    if result == expected:
-                        print("✅ Matches expected:", expected)
-                    else:
-                        print("❌ Mismatch! Expected:", expected)
-            except Exception as e:
-                print(f"Could not run Example {idx} automatically:", e)
+                        # Special handling for linked list inputs
+                        if "head" in args_dict and isinstance(args_dict["head"], list):
+                            args_dict["head"] = list_to_linked(args_dict["head"])
+
+                        result = method(solution, **args_dict)
+
+                        # Convert linked list outputs back to list
+                        if isinstance(result, ListNode):
+                            result = linked_to_list(result)
+
+                        expected = None
+                        if idx-1 < len(outputs):
+                            try:
+                                expected = ast.literal_eval(outputs[idx-1].strip())
+                            except Exception:
+                                expected = outputs[idx-1].strip()
+
+                        print(f"Example {idx} Output: {result}")
+                        if expected is not None:
+                            if result == expected:
+                                print("✅ Matches expected:", expected)
+                            else:
+                                print("❌ Mismatch! Expected:", expected)
+                    except Exception as e:
+                        print(f"Could not run Example {idx} automatically:", e)
+
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def list_to_linked(lst):
+    dummy = ListNode(0)
+    curr = dummy
+    for val in lst:
+        curr.next = ListNode(val)
+        curr = curr.next
+    return dummy.next
+
+def linked_to_list(node):
+    result = []
+    while node:
+        result.append(node.val)
+        node = node.next
+    return result
+
 
 class Solution:
-    def hasDuplicate(self, nums: List[int]) -> bool:
+    def __init__(self):
+        self.stringValEnc = self.encode(["Hello","World"])
+        self.stringValDec = self.decode(self.stringValEnc)
+        
+    def hasDuplicate(self, nums: list[int]) -> bool:
         """
         Example 1:
         Input: nums = [1,2,3,1]
@@ -95,11 +124,11 @@ class Solution:
         """
         Example 1:
         Input: s = "anagram", t = "nagaram"
-        Output: true
+        Output: True
 
         Example 2:
         Input: s = "rat", t = "car"
-        Output: false
+        Output: False
         """
         a, b = {}, {}
         for i in s:
@@ -110,7 +139,7 @@ class Solution:
             return True
         return False
     
-    def twoSum(self, nums: List[int], target: int) -> List[int]:
+    def twoSum(self, nums: list[int], target: int) -> list[int]:
         """
         Example 1:
         Input: nums = [2,7,11,15], target = 9
@@ -134,7 +163,7 @@ class Solution:
             count[diff] = i
         return [0, 0]
 
-    def mergeIntervals(self, intervals: List[List[int]]) -> List[List[int]]:
+    def mergeIntervals(self, intervals: list[list[int]]) -> list[list[int]]:
         """
         Example 1:
         Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
@@ -160,7 +189,7 @@ class Solution:
                 merged[-1] = [merged[-1][0], max(merged[-1][1], interval[1])]
         return merged
 
-    def shiftZeros(self, nums: List[int]) -> None:
+    def shiftZeros(self, nums: list[int]) -> None:
         """
         Example 1:
         Input: nums = [0,1,0,3,12]
@@ -177,11 +206,11 @@ class Solution:
                 left += 1
         return arr
 
-    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
+    def groupAnagrams(self, strs: list[str]) -> list[list[str]]:
         """
         Example 1:
         Input: strs = ["eat","tea","tan","ate","nat","bat"]
-        Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+        Output: [['bat'], ['nat', 'tan'], ['ate', 'eat', 'tea']]
         Explanation:
         There is no string in strs that can be rearranged to form "bat".
         The strings "nat" and "tan" are anagrams as they can be rearranged to form each other.
@@ -210,7 +239,7 @@ class Solution:
             anagrams[key].append(word)
         return list(anagrams.values())
 
-    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
+    def groupAnagrams(self, strs: list[str]) -> list[list[str]]:
         """
         Example 1:
         Input: strs = ["eat","tea","tan","ate","nat","bat"]
@@ -234,7 +263,7 @@ class Solution:
             res[sortedS].append(word)
         return list(res.values())
 
-    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+    def topKFrequent(self, nums: list[int], k: int) -> list[int]:
         """
         Example 1:
         Input: nums = [1,1,1,2,2,3], k = 2
@@ -254,7 +283,7 @@ class Solution:
         sortedKeys = sorted(count.items(), key = lambda x: x[1], reverse = True)[:k]
         return [k for k, v in sortedKeys]
 
-    def encode(self, strs: List[str]) -> str:
+    def encode(self, strs: list[str]) -> str:
         """
         Input: ["Hello","World"]
         Output: ["Hello","World"]
@@ -273,9 +302,7 @@ class Solution:
             res += str(len(word)) + "#" + word
         return res
 
-    stringValEnc = encode(["Hello","World"])
-
-    def decode(self, s: str) -> List[str]:
+    def decode(self, s: str) -> list[str]:
         """
         Input: ["Hello","World"]
         Output: ["Hello","World"]
@@ -299,9 +326,7 @@ class Solution:
             i = j + 1 + length
         return res
 
-    stringValDec = decode(stringValEnc)
-
-    def productExceptSelf(self, nums: List[int]) -> List[int]:
+    def productExceptSelf(self, nums: list[int]) -> list[int]:
         """
         Example 1:
         Input: nums = [1,2,3,4]
@@ -319,7 +344,7 @@ class Solution:
             lst.append(prod // nums[i])
         return lst
 
-    def productExceptSelf(self, nums: List[int]) -> List[int]:
+    def productExceptSelf(self, nums: list[int]) -> list[int]:
         """
         Example 1:
         Input: nums = [1,2,3,4]
@@ -341,7 +366,7 @@ class Solution:
             post *= nums[i]
         return res
 
-    def longestConsecutive(self, nums: List[int]) -> int:
+    def longestConsecutive(self, nums: list[int]) -> int:
         """
         Example 1:
         Input: nums = [100,4,200,1,3,2]
@@ -379,17 +404,17 @@ class Solution:
         """
         Example 1:
         Input: s = "A man, a plan, a canal: Panama"
-        Output: true
+        Output: True
         Explanation: "amanaplanacanalpanama" is a palindrome.
         
         Example 2:
         Input: s = "race a car"
-        Output: false
+        Output: False
         Explanation: "raceacar" is not a palindrome.
         
         Example 3:
         Input: s = " "
-        Output: true
+        Output: True
         Explanation: s is an empty string "" after removing non-alphanumeric characters.
         Since an empty string reads the same forward and backward, it is a palindrome.
         """
@@ -437,7 +462,7 @@ class Solution:
                 l += 1
         return [0, 0]
 
-    def threeSum(self, nums: List[int]) -> List[List[int]]:
+    def threeSum(self, nums: list[int]) -> list[list[int]]:
         """
         Input: nums = [-1,0,1,2,-1,-4]
         Output: [[-1,-1,2],[-1,0,1]]
@@ -466,7 +491,7 @@ class Solution:
                         l += 1
         return res
 
-    def missingNumber(self, nums: List[int]) -> int:
+    def missingNumber(self, nums: list[int]) -> int:
         """
         Input: nums = [3,0,1]
 
@@ -484,7 +509,7 @@ class Solution:
         actualSum = (length * (length + 1)) // 2
         return actualSum - sum
 
-    def maxProfit(self, prices: List[int]) -> int:
+    def maxProfit(self, prices: list[int]) -> int:
         """
         Input: prices = [10,1,5,6,7,1]
         
@@ -591,7 +616,7 @@ class Solution:
                 stack.append(c)
         return True if not stack else False
 
-    def findMin(self, nums: List[int]) -> int:
+    def findMin(self, nums: list[int]) -> int:
         """
         Input: nums = [3,4,5,1,2]
         Output: 1
@@ -607,7 +632,7 @@ class Solution:
                 r = m
         return nums[l]
 
-    def search(self, nums: List[int], target: int) -> int:
+    def search(self, nums: list[int], target: int) -> int:
         """
         Example 1:
         Input: nums = [4,5,6,7,0,1,2], target = 0
@@ -635,7 +660,16 @@ class Solution:
                 else:
                     l = m + 1
         return -1
+    
+    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        prev, curr = None, head
+        while curr:
+            nxt = curr.next
+            curr.next = prev
+            prev = curr
+            curr = nxt
+        return prev
 
 if __name__ == "__main__":
     import main
-    run_all_functions(main)
+    run_all_classes(main)
