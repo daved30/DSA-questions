@@ -276,6 +276,15 @@ class Solution:
     stringValDec = decode(stringValEnc)
 
     def productExceptSelf(self, nums: List[int]) -> List[int]:
+        """
+        Example 1:
+        Input: nums = [1,2,3,4]
+        Output: [24,12,8,6]
+        
+        Example 2:
+        Input: nums = [-1,1,0,-3,3]
+        Output: [0,0,9,0,0]
+        """
         prod = 1
         for i in nums:
             prod = prod * i
@@ -285,6 +294,15 @@ class Solution:
         return lst
 
     def productExceptSelf(self, nums: List[int]) -> List[int]:
+        """
+        Example 1:
+        Input: nums = [1,2,3,4]
+        Output: [24,12,8,6]
+        
+        Example 2:
+        Input: nums = [-1,1,0,-3,3]
+        Output: [0,0,9,0,0]
+        """
         length = len(nums)
         res = [1] * length
         pre = 1
@@ -298,6 +316,20 @@ class Solution:
         return res
 
     def longestConsecutive(self, nums: List[int]) -> int:
+        """
+        Example 1:
+        Input: nums = [100,4,200,1,3,2]
+        Output: 4
+        Explanation: The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4.
+        
+        Example 2:
+        Input: nums = [0,3,7,2,5,8,4,6,0,1]
+        Output: 9
+        
+        Example 3:
+        Input: nums = [1,0,1,2]
+        Output: 3
+        """
         numSet = set()
         l = 0
         longest = 0
@@ -315,6 +347,23 @@ class Solution:
         ord('0') <= ord(c) <= ord('9'))
 
     def isPalindrome(self, s: str) -> bool:
+        """
+        Example 1:
+        Input: s = "A man, a plan, a canal: Panama"
+        Output: true
+        Explanation: "amanaplanacanalpanama" is a palindrome.
+        
+        Example 2:
+        Input: s = "race a car"
+        Output: false
+        Explanation: "raceacar" is not a palindrome.
+        
+        Example 3:
+        Input: s = " "
+        Output: true
+        Explanation: s is an empty string "" after removing non-alphanumeric characters.
+        Since an empty string reads the same forward and backward, it is a palindrome.
+        """
         l, r = 0, len(s) - 1
         while l < r:
             while l < r and not self.alNum(s[l]):
@@ -332,9 +381,20 @@ class Solution:
 
     def twoSum2(numbers, target):
         """
+        Example 1:
         Input: numbers = [2,7,11,15], target = 9
         Output: [1,2]
         Explanation: The sum of 2 and 7 is 9. Therefore, index1 = 1, index2 = 2. We return [1, 2].
+        
+        Example 2:
+        Input: numbers = [2,3,4], target = 6
+        Output: [1,3]
+        Explanation: The sum of 2 and 4 is 6. Therefore index1 = 1, index2 = 3. We return [1, 3].
+        
+        Example 3:
+        Input: numbers = [-1,0], target = -1
+        Output: [1,2]
+        Explanation: The sum of -1 and 0 is -1. Therefore index1 = 1, index2 = 2. We return [1, 2].
         """
         length = len(numbers) - 1
         l, r = 0, length
