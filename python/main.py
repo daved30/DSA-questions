@@ -255,6 +255,19 @@ class Solution:
         return [k for k, v in sortedKeys]
 
     def encode(self, strs: List[str]) -> str:
+        """
+        Input: ["Hello","World"]
+        Output: ["Hello","World"]
+        Explanation:
+        Machine 1:
+        Codec encoder = new Codec();
+        String msg = encoder.encode(strs);
+        Machine 1 ---msg---> Machine 2
+
+        Machine 2:
+        Codec decoder = new Codec();
+        String[] strs = decoder.decode(msg);
+        """
         res = ""
         for word in strs:
             res += str(len(word)) + "#" + word
@@ -263,6 +276,19 @@ class Solution:
     stringValEnc = encode(["Hello","World"])
 
     def decode(self, s: str) -> List[str]:
+        """
+        Input: ["Hello","World"]
+        Output: ["Hello","World"]
+        Explanation:
+        Machine 1:
+        Codec encoder = new Codec();
+        String msg = encoder.encode(strs);
+        Machine 1 ---msg---> Machine 2
+
+        Machine 2:
+        Codec decoder = new Codec();
+        String[] strs = decoder.decode(msg);
+        """
         res, i = [], 0
         while i in range(len(s)):
             j = i
@@ -342,6 +368,9 @@ class Solution:
         return longest
 
     def alNum(self, c: str) -> bool:
+        """
+        ASCII bool conversion and checks of the character
+        """
         return (ord('A') <= ord(c) <= ord('Z') or
         ord('a') <= ord(c) <= ord('z') or
         ord('0') <= ord(c) <= ord('9'))
