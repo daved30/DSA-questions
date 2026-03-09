@@ -3,6 +3,7 @@ import inspect, re, ast
 from typing import List, Optional
 
 
+# Input parser
 def parse_input_line(input_line: str):
     args_dict = {}
     parts = re.split(r',(?![^\[]*\])', input_line)
@@ -16,10 +17,11 @@ def parse_input_line(input_line: str):
                 args_dict[key] = value
     return args_dict
 
+# Runner for class methods
 def run_all_classes(module):
     for cls_name, cls in inspect.getmembers(module, inspect.isclass):
         if cls_name == "Solution":
-            solution = cls()  # instantiate Solution
+            solution = cls()
             methods = OrderedDict(
                 sorted(
                     inspect.getmembers(cls, inspect.isfunction),
@@ -41,15 +43,18 @@ def run_all_classes(module):
                     try:
                         args_dict = parse_input_line(input_line)
 
-                        # Special handling for linked list inputs
-                        if "head" in args_dict and isinstance(args_dict["head"], list):
-                            args_dict["head"] = list_to_linked(args_dict["head"])
+                        # Convert linked list inputs
+                        for key, value in args_dict.items():
+                            if isinstance(value, list) and key in ["head", "list1", "list2"]:
+                                args_dict[key] = list_to_linked(value)
 
                         result = method(solution, **args_dict)
 
-                        # Convert linked list outputs back to list
+                        # Normalize outputs
                         if isinstance(result, ListNode):
                             result = linked_to_list(result)
+                        elif result is None:
+                            result = []
 
                         expected = None
                         if idx-1 < len(outputs):
@@ -68,7 +73,7 @@ def run_all_classes(module):
                         print(f"Could not run Example {idx} automatically:", e)
 
 
-# Definition for singly-linked list.
+# Linked list helpers
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
@@ -88,7 +93,6 @@ def linked_to_list(node):
         result.append(node.val)
         node = node.next
     return result
-
 
 class Solution:
     def __init__(self):
@@ -682,6 +686,39 @@ class Solution:
             prev = curr
             curr = nxt
         return prev
+    
+    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+        """
+        Example 1:
+        Input: list1 = [1,2,4], list2 = [1,3,4]
+        Output: [1,1,2,3,4,4]
+        
+        Example 2:
+        Input: list1 = [], list2 = []
+        Output: []
+        
+        Example 3:
+        Input: list1 = [], list2 = [0]
+        Output: [0]
+        """
+        dummy = ListNode()
+        tail = dummy
+
+        while list1 and list2:
+            if list1.val < list2.val:
+                tail.next = list1
+                list1 = list1.next
+            else:
+                tail.next = list2
+                list2 = list2.next
+            tail = tail.next
+
+        if list1:
+            tail.next = list1
+        elif list2:
+            tail.next = list2
+        
+        return dummy.next
 
 if __name__ == "__main__":
     import main
