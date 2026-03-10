@@ -719,6 +719,54 @@ class Solution:
             tail.next = list2
         
         return dummy.next
+    
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        """
+        Example 1:
+        Input: head = [3,2,0,-4]
+        Output: True
+        Explanation: There is a cycle in the linked list, where the tail connects to the 1st node (0-indexed).
+        
+        Example 2:
+        Input: head = [1,2]
+        Output: True
+        Explanation: There is a cycle in the linked list, where the tail connects to the 0th node.
+        """
+        slow, fast = head, head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+            if slow == fast:
+                return False
+        return True
+    
+    def reorderList(self, head: Optional[ListNode]) -> None:
+        """
+        Example 1:
+        Input: head = [1,2,3,4]
+        Output: [1,4,2,3]
+        
+        Example 2:
+        Input: head = [1,2,3,4,5]
+        Output: [1,5,2,4,3]
+        """
+        slow, fast = head, head.next
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        second = slow.next
+        prev = slow.next = None
+        while second:
+            tmp = second.next
+            second.next = prev
+            prev = second
+            second = tmp
+        first, second = head, prev
+        while second:
+            tmp1, tmp2 = first.next, second.next
+            first.next = second
+            second.next = tmp1
+            first, second = tmp1, tmp2
 
 if __name__ == "__main__":
     import main
